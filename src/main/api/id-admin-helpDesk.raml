@@ -1,0 +1,77 @@
+#%RAML 1.0
+version: v1
+baseUri: http://localhost:8081
+title: ITHelpDesk
+/sendTickets:
+  
+  post:
+   body: 
+     application/json:       
+       #schema: !include validation-schema.jsd       
+       example:
+         {
+            "ticket_name": "Problem with laptop",
+              "description": "Cannot login to my laptop",
+              "empId": "424",
+              "email": "test@gmail.com",
+              "assigned_to": "sudheer@liquidhub.com",
+              "comments": "not working",
+              "status": "Open"
+          }
+          
+   responses: 
+     201:
+       body: 
+         application/json:
+           example: |
+            {"message":"Ticket inserted"}
+            
+  patch:
+       body:
+         application/json:
+           example: | 
+            {
+              "ticket_id" : "1",
+              "ticket_name": "Problem with laptop",
+              "description": "Cannot login to my laptop",
+              "empId": "424",
+              "email": "test@gmail.com",
+              "assigned_to": "sudheer@liquidhub.com",
+              "comments": "not working",
+              "status": "Open"
+            }
+            
+       responses:    
+         200:
+           body: 
+             application/json:
+               example: 424
+               
+  delete:
+       body: 
+         application/json:
+           example: | 
+            {
+              "ticket_name": "Problem with laptop",
+              "description": "Cannot login to my laptop",
+              "empId": "424",
+              "email": "test@gmail.com",
+              "assigned_to": "sudheer@liquidhub.com",
+              "comments": "not working",
+              "status": "Open"
+            }
+            
+       responses:    
+         200:
+           body: 
+             application/json:
+               example: 424
+            
+/{ID}:
+   get:
+    responses: 
+      200:
+       body: 
+         application/json:
+           example: |
+            {"message":"Ticket modified"}

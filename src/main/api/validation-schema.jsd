@@ -1,0 +1,33 @@
+{
+	"$id": "http://example.com/example.json",
+	"type": "object",
+	"$schema": "http://json-schema.org/draft-03/schema",
+	"properties": {
+		"ticket_name": {
+			"type": "string",
+			"required": true
+		},
+		"description": {
+			"type": "string"
+		},
+		"empId": {
+			"type": "integer",
+			"required": true
+		},
+		"email": {
+			"type": "string",
+			"required": true
+		},
+		"assigned_to": {
+			"type": "string",
+			"required": true
+		},
+		"comments": {
+			"type": "string"
+		},
+		"status": {
+			"type": "string",
+			"required": true
+		}
+	}
+}

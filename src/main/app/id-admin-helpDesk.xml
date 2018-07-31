@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:imap="http://www.mulesoft.org/schema/mule/imap" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/imap http://www.mulesoft.org/schema/mule/imap/current/mule-imap.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+    <http:listener-config name="id-admin-helpDesk-httpListenerConfig" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration" />
+    <apikit:config name="id-admin-helpDesk-config" raml="id-admin-helpDesk.raml" consoleEnabled="false" doc:name="Router" />
+    <db:mysql-config name="MySQL_Configuration" host="127.0.0.1" port="3306" user="root" password="Liquid1234" database="PSD" doc:name="MySQL Configuration" />
+    <smtp:gmail-connector name="Gmail" ccAddresses="#[json:email]" contentType="text/plain" subject="INSIDE is working fine" validateConnections="true" doc:name="Gmail" />
+    <validation:config name="Validation_Configuration" doc:name="Validation Configuration"/>
+    <flow name="id-admin-helpDesk-main">
+        <http:listener config-ref="id-admin-helpDesk-httpListenerConfig" path="/api/*" doc:name="HTTP" />
+        <apikit:router config-ref="id-admin-helpDesk-config" doc:name="APIkit Router" />
+        <exception-strategy ref="helpDesk_exception_handling" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="id-admin-helpDesk-console">
+        <http:listener config-ref="id-admin-helpDesk-httpListenerConfig" path="/console/*" doc:name="HTTP" />
+        <apikit:console config-ref="id-admin-helpDesk-config" doc:name="APIkit Console" />
+    </flow>
+    <flow name="post:/sendTickets:application/json:id-admin-helpDesk-config">
+        <validation:all config-ref="Validation_Configuration" doc:name="Validation : Before inserting data to DB">
+            <validation:validations>
+                <validation:is-email email="#[json:email]"/>
+                <validation:is-not-empty value="#[json:ticket_name]"/>
+                <validation:is-not-empty value="#[json:description]"/>
+                <validation:is-not-empty value="#[json:email]"/>
+                <validation:is-not-empty value="#[json:empId]"/>
+                <validation:is-number value="#[json:empId]" numberType="INTEGER"/>
+            </validation:validations>
+        </validation:all>
+        <logger message="^^^^#[payload],#[json:ticket_name]" level="INFO" doc:name="Logger : Validated payload"/>
+         <set-property propertyName="Content-Type" value="application/json" doc:name="Property : To set content type" />
+        <object-to-string-transformer doc:name="Object to String" />
+        <!-- <set-variable variableName="ticketList" value="#[new ArrayList()]" doc:name="newTicketVariable"/> -->
+        <!-- <object-to-byte-array-transformer doc:name="Object to Byte Array"/> -->
+        <!-- <json:object-to-json-transformer doc:name="Object to JSON"/> -->
+        <logger message="****Ticket payload****#[payload],#[json:email]" level="INFO" doc:name="Logger : Ticket Payload" />
+        <set-session-variable variableName="emailID" value="#[json:email]" doc:name="Session Variable"/>
+
+        <db:insert config-ref="MySQL_Configuration" doc:name="Database : Query to Insert ticket to DB">
+            <db:parameterized-query><![CDATA[insert into IT_TICKET 
+(ticket_name,description,empId,email,assigned_to,comments,status) values 
+(#[json:ticket_name],#[json:description],#[json:empId],#[json:email],#[json:assigned_to],#[json:comments],#[json:status]);]]></db:parameterized-query>
+        </db:insert>
+        <smtp:outbound-endpoint host="smtp.gmail.com" user="sudheergunturi@gmail.com" password="g.$k.varma424" connector-ref="Gmail" to="#[sessionVars.emailID]" from="sudheergunturi@gmail.com" subject="Thank you for contacting IT Help desk. A new ticket has been created for your issue." responseTimeout="10000" doc:name="SMTP : Mail notification to employee" />
+        <logger message="***********Records inserted in to DB*************#[payload]" level="INFO" doc:name="Logger : Payload after DB insertion" />
+        <set-payload value="{&quot;message&quot;:&quot;Ticket added&quot;}" doc:name="Set Payload :Message for successful insertion" />
+    </flow>
+    <flow name="patch:/sendTickets:id-admin-helpDesk-config">
+        <validation:all config-ref="Validation_Configuration" doc:name="Validation : Before updating data to DB">
+            <validation:validations>
+                <validation:is-email email="#[json:email]"/>
+                <validation:is-not-empty value="#[json:ticket_name]"/>
+                <validation:is-not-empty value="#[json:description]"/>
+                <validation:is-not-empty value="#[json:email]"/>
+                <validation:is-not-empty value="#[json:empId]"/>
+                <validation:is-number value="#[json:empId]" numberType="INTEGER"/>
+            </validation:validations>
+        </validation:all>
+        <set-property propertyName="Content-Type" value="application/json" doc:name="Property : To set content type" />
+        <logger message="****Please update my record**** #[payload]" level="INFO" doc:name="Logger : Validated payload" />
+        <db:update config-ref="MySQL_Configuration" doc:name="Database : Query to Update ticket">
+            <db:parameterized-query><![CDATA[UPDATE IT_TICKET SET empId = #[json:empId], ticket_name = #[json:ticket_name], description = #[json:description], email = #[json:email], comments = #[json:comments] WHERE ticket_id = #[json:ticket_id];]]></db:parameterized-query>
+
+        </db:update>
+        <smtp:outbound-endpoint host="smtp.gmail.com" user="sudheergunturi@gmail.com" password="g.$k.varma424" connector-ref="Gmail" to="sgunturi@liquidhub.com" from="sudheergunturi@gmail.com" subject="Your ticket has been successfully updated...!!!!" responseTimeout="10000" doc:name="SMTP : Mail notification on successful update" />
+        <logger message="Update mail sent.........#[payload]" level="INFO" doc:name="Logger : Payload after DB Update" />
+    </flow>
+    <flow name="delete:/sendTickets:id-admin-helpDesk-config">
+        <set-property propertyName="Content-Type" value="application/json" doc:name="Property : To set content type" />
+        <logger level="INFO" doc:name="Logger : Ticket ID to delete" message="**** Delete Logger : Ticket id to delete from data base******"/>
+        <db:delete config-ref="MySQL_Configuration" doc:name="Database : Query to delete ticket">
+            <db:parameterized-query><![CDATA[DELETE FROM IT_TICKET WHERE ticket_id = #[json:ticket_id];]]></db:parameterized-query>
+        </db:delete>
+        <logger level="INFO" doc:name="Logger : Payload after ticket delete" />
+    </flow>
+    <flow name="get:/{ID}:id-admin-helpDesk-config">
+        <set-property propertyName="Content-Type" value="application/json" doc:name="Property : To set content type" />
+        <logger message="****** Get Logger : Before GET #[payload]********" level="INFO" doc:name="Logger : Before GET" />
+        <db:select config-ref="MySQL_Configuration" doc:name="Database : Query ticket details">
+            <db:parameterized-query><![CDATA[select ticket_name, description, empId, email, assigned_to, comments, status from IT_TICKET where ticket_id= #[message.inboundProperties.'http.uri.params'.ID];]]></db:parameterized-query>
+        </db:select>
+        <logger message="******Get Logger : Ticket details of given ticket id #[payload]" level="INFO" doc:name="Logger : After getting ticket details" />
+        <json:object-to-json-transformer doc:name="Object to JSON" />
+        <set-payload value="#[payload]" doc:name="Set Payload" />
+    </flow>
+    <choice-exception-strategy name="helpDesk_exception_handling">
+        <catch-exception-strategy doc:name="Exception handler : For Invalid data" when="#[exception.causedBy(org.mule.extension.validation.api.MultipleValidationException)]">
+
+            <logger message="^^^^^Not a valid data. Please enter correct data^^^^^" level="INFO" doc:name="Logger : Data Exception" />
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(java.net.UnknownHostException: smtp.gmail.com)]" doc:name="Exception handler : Mail SMTP">
+            <logger message="******* Unable to connect to mail transport : smtp.gmail.com - Check your internet connection *********" level="INFO" doc:name="Logger : Cannot Send e-mail"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(java.lang.IllegalArgumentException)]" doc:name="Exception handler : Null Argument">
+            <logger message="******* SessionVar for email is not provided ********" level="INFO" doc:name="Logger : Null Argument"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(com.mysql.jdbc.MysqlDataTruncation)]" doc:name="Exception handler : Data too long">
+            <logger message="****** The data provided is more than the allowed characters *******" level="INFO" doc:name="Logger : Data too long"/>
+        </catch-exception-strategy>
+    </choice-exception-strategy>
+</mule>
