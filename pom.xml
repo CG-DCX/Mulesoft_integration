@@ -5,7 +5,7 @@
 	<groupId>com.lh.mule.dip.integration</groupId>
 	<artifactId>it-help-desk</artifactId>
     <version>1.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>mule</packaging>
 	<name>Mule it_help_desk Application</name>
 
 	<parent>
@@ -39,7 +39,15 @@
 				<version>${mule.tools.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-                    <copyToAppsDirectory>true</copyToAppsDirectory>
+					<copyToAppsDirectory>false</copyToAppsDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -81,20 +89,6 @@
             </plugin>
 			
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Specification-Title>${project.name}</Specification-Title>
-                            <Specification-Version>${project.version}</Specification-Version>
-                            <Build-Number>${BUILD_NUMBER}</Build-Number>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.0.0</version>
@@ -154,10 +148,77 @@
                     </execution>
                 </executions>
             </plugin>
+			<plugin>
+			  <groupId>org.mule.tools.maven</groupId>
+			  <artifactId>mule-maven-plugin</artifactId>
+			  <version>2.2.1</version>
+			</plugin>
 			
 		</plugins>
 	</build>
-
+	
+	<profiles>
+		<profile>
+			<id>standalone</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.mule.tools.maven</groupId>
+						<artifactId>mule-maven-plugin</artifactId>
+						<configuration>
+							<deploymentType>standalone</deploymentType>
+							<muleVersion>${mule.version}</muleVersion> 
+							<muleHome>${mule.home}</muleHome> 
+							<applicationName>${project.artifactId}</applicationName> 
+							<community>${mule.runtime.community}</community> 
+						</configuration>
+						<executions>
+							<execution>
+								<id>deploy</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>deploy</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+		  <id>cloudhub</id>
+		  <build>
+			<plugins>
+			  <plugin>
+				<groupId>org.mule.tools.maven</groupId>
+				<artifactId>mule-maven-plugin</artifactId>
+				<configuration>
+				  <deploymentType>cloudhub</deploymentType>
+				  <muleVersion>${mule.version}</muleVersion> 
+				  <username>${anypoint.username}</username> 
+				  <password>${anypoint.password}</password> 
+				  <applicationName>${project.artifactId}</applicationName>
+				  <environment>${cloundhub.env}</environment> 
+				  <businessGroup>${anypoint.businessGroup}</businessGroup>
+				  <region>${cloudhub.region}</region>
+				  <uri>${anypoint.uri}</uri> 
+				  <workerType>${cloudhub.workerType}</workerType>
+				  <workers>${cloudhub.workers}</workers>
+				</configuration>
+				<executions>
+				  <execution>
+					<id>deploy</id>
+					<phase>deploy</phase>
+					<goals>
+					  <goal>deploy</goal>
+					</goals>
+				  </execution>
+				</executions>
+			  </plugin>
+			</plugins>
+		  </build>
+		</profile>	
+	</profiles>
 	<!-- Mule Dependencies -->
 	<dependencies>
 		<!-- Xml configuration -->
@@ -293,5 +354,5 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
+	
 </project>
