@@ -201,7 +201,7 @@
 				  <environment>${cloundhub.env}</environment> 
 				  <businessGroup>${anypoint.businessGroup}</businessGroup>
 				  <region>${cloudhub.region}</region>
-				  <uri>${anypoint.uri}</uri> 
+				  <uri>https://anypoint.mulesoft.com</uri> 
 				  <workerType>${cloudhub.workerType}</workerType>
 				  <workers>${cloudhub.workers}</workers>
 				</configuration>
