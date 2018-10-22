@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.lh.mule.dip.integration</groupId>
 	<artifactId>it-help-desk</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
-    <packaging>mule</packaging>
+    <version>1.0.1</version>
+    <packaging>jar</packaging>
 	<name>Mule it_help_desk Application</name>
 
 	<parent>
@@ -174,7 +174,20 @@
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--Start Added for Mule deployment strategy -->
+		<!-- Mule Transports -->
+		<dependency>
+			<groupId>org.mule.transports</groupId>
+			<artifactId>mule-transport-file</artifactId>
+			<version>${mule.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.transports</groupId>
+			<artifactId>mule-transport-http</artifactId>
+			<version>${mule.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!--Added for Mule deployment strategy -->
 		<dependency>
 			<groupId>org.mule.extensions</groupId>
 			<artifactId>mule-extensions-annotations</artifactId>
@@ -212,22 +225,7 @@
 			<scope>provided</scope>
 		</dependency>
 		
-		<!--End Added for Mule deployment strategy -->
-
-		<!-- Mule Transports -->
-		<dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-file</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		
-        <dependency>
-			<groupId>org.mule.transports</groupId>
-			<artifactId>mule-transport-http</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
+		<!--Added for Mule deployment strategy -->
 		<dependency>
         	<groupId>com.mulesoft.muleesb.transports</groupId>
 			<artifactId>mule-transport-jdbc-ee</artifactId>
