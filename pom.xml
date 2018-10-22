@@ -5,7 +5,7 @@
 	<groupId>com.lh.mule.dip.integration</groupId>
 	<artifactId>it-help-desk</artifactId>
     <version>1.0.1</version>
-    <packaging>jar</packaging>
+    <packaging>mule</packaging>
 	<name>Mule it_help_desk Application</name>
 
 	<parent>
