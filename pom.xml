@@ -39,6 +39,7 @@
 				<version>${mule.tools.version}</version>
 				<extensions>true</extensions>
 				<configuration>
+                    <filterAppDirectory>true</filterAppDirectory>
 					<copyToAppsDirectory>false</copyToAppsDirectory>
 				</configuration>
 			</plugin>
