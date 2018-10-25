@@ -8,11 +8,11 @@
     <packaging>mule</packaging>
 	<name>Mule it_help_desk Application</name>
 
-<!--	<parent>
+	<parent>
         <groupId>com.lh.digital.integration.framework</groupId>
         <artifactId>starter-parent</artifactId>
         <version>1.5.1</version>
-    </parent>-->
+    </parent>
 	
     <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
