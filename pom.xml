@@ -216,7 +216,39 @@
 			  </plugin>
 			</plugins>
 		  </build>
-		</profile>	
+		</profile>
+		<profile>
+			<id>arm</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.mule.tools.maven</groupId>
+						<artifactId>mule-maven-plugin</artifactId>
+						<version>2.2.1</version>
+						<configuration>
+							<deploymentType>arm</deploymentType>
+							<username>${anypoint.username}</username>
+							<password>${anypoint.password}</password>
+							<businessGroup>${anypoint.businessGroup}</businessGroup>
+							<uri>${anypoint.uri}</uri>
+							<target>${arm.target.name}</target>
+							<!-- One of: server, serverGroup, cluster -->
+							<targetType>${arm.target.type}</targetType>
+							<environment>${arm.environment}</environment>
+						</configuration>
+						<executions>
+							<execution>
+								<id>deploy</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>deploy</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 	<!-- Mule Dependencies -->
 	<dependencies>
