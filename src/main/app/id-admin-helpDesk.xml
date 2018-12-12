@@ -71,7 +71,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
             <db:parameterized-query><![CDATA[UPDATE IT_TICKET SET empId = #[json:empId], ticket_name = #[json:ticket_name], description = #[json:description], email = #[json:email], comments = #[json:comments] WHERE ticket_id = #[json:ticket_id];]]></db:parameterized-query>
 
         </db:update>
-        <smtp:outbound-endpoint host="smtp.gmail.com" user="sudheergunturi@gmail.com" password="g.$k.varma424" connector-ref="Gmail" to="sgunturi@liquidhub.com" from="sudheergunturi@gmail.com" subject="Your ticket has been successfully updated...!!!!" responseTimeout="10000" doc:name="SMTP : Mail notification on successful update" />
+        <!--<smtp:outbound-endpoint host="smtp.gmail.com" user="sudheergunturi@gmail.com" password="g.$k.varma424" connector-ref="Gmail" to="sgunturi@liquidhub.com" from="sudheergunturi@gmail.com" subject="Your ticket has been successfully updated...!!!!" responseTimeout="10000" doc:name="SMTP : Mail notification on successful update" />-->
         <logger message="Update mail sent.........#[payload]" level="INFO" doc:name="Logger : Payload after DB Update" />
     </flow>
     <flow name="delete:/sendTickets:id-admin-helpDesk-config">
