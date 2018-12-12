@@ -12,8 +12,9 @@ http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smt
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
     <http:listener-config name="id-admin-helpDesk-httpListenerConfig" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration" />
     <apikit:config name="id-admin-helpDesk-config" raml="id-admin-helpDesk.raml" consoleEnabled="false" doc:name="Router" />
-    <db:mysql-config name="MySQL_Configuration" host="127.0.0.1" port="3306" user="root" password="Liquid1234" database="PSD" doc:name="MySQL Configuration" />
-    <smtp:gmail-connector name="Gmail" ccAddresses="#[json:email]" contentType="text/plain" subject="INSIDE is working fine" validateConnections="true" doc:name="Gmail" />
+    <!--<db:mysql-config name="MySQL_Configuration" host="127.0.0.1" port="3306" user="root" password="Liquid1234" database="PSD" doc:name="MySQL Configuration" />-->
+    <db:mysql-config name="MySQL_Configuration" host="10.60.8.222" port="3306" user="root" password="Liquidhub@12" database="PSD" doc:name="MySQL Configuration" />
+    <!--<smtp:gmail-connector name="Gmail" ccAddresses="#[json:email]" contentType="text/plain" subject="INSIDE is working fine" validateConnections="true" doc:name="Gmail" />-->
     <validation:config name="Validation_Configuration" doc:name="Validation Configuration"/>
     <flow name="id-admin-helpDesk-main">
         <http:listener config-ref="id-admin-helpDesk-httpListenerConfig" path="/api/*" doc:name="HTTP" />
