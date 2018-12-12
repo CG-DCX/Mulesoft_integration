@@ -50,7 +50,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 (ticket_name,description,empId,email,assigned_to,comments,status) values 
 (#[json:ticket_name],#[json:description],#[json:empId],#[json:email],#[json:assigned_to],#[json:comments],#[json:status]);]]></db:parameterized-query>
         </db:insert>
-        <smtp:outbound-endpoint host="smtp.gmail.com" user="sudheergunturi@gmail.com" password="g.$k.varma424" connector-ref="Gmail" to="#[sessionVars.emailID]" from="sudheergunturi@gmail.com" subject="Thank you for contacting IT Help desk. A new ticket has been created for your issue." responseTimeout="10000" doc:name="SMTP : Mail notification to employee" />
+        <!--<smtp:outbound-endpoint host="smtp.gmail.com" user="sudheergunturi@gmail.com" password="g.$k.varma424" connector-ref="Gmail" to="#[sessionVars.emailID]" from="sudheergunturi@gmail.com" subject="Thank you for contacting IT Help desk. A new ticket has been created for your issue." responseTimeout="10000" doc:name="SMTP : Mail notification to employee" />-->
         <logger message="***********Records inserted in to DB*************#[payload]" level="INFO" doc:name="Logger : Payload after DB insertion" />
         <set-payload value="{&quot;message&quot;:&quot;Ticket added&quot;}" doc:name="Set Payload :Message for successful insertion" />
     </flow>
