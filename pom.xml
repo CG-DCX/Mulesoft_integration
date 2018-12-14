@@ -159,12 +159,12 @@
 	<profiles>
 	    <profile>
             <id>uber</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>uber</name>
-                </property>
-            </activation>
+            <!--<activation>-->
+            <!--    <activeByDefault>false</activeByDefault>-->
+            <!--    <property>-->
+            <!--        <name>uber</name>-->
+            <!--    </property>-->
+            <!--</activation>-->
             <build>
                 <plugins>
                     <plugin>
