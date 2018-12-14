@@ -160,7 +160,7 @@
 	    <profile>
             <id>uber</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
                 <property>
                 <name>uber</name>
                 </property>
