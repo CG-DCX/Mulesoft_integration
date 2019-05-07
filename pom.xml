@@ -197,8 +197,8 @@
 				  <username>${anypoint.username}</username> 
 				  <password>${anypoint.password}</password> 
 				  <applicationName>${project.artifactId}</applicationName>
-				  <environment>${cloundhub.env}</environment> 
-				  <businessGroup>${anypoint.businessGroup}</businessGroup>
+				  <environment>Sandbox</environment> 
+				  <businessGroup>CGI DI Lab</businessGroup>
 				  <region>${cloudhub.region}</region>
 				  <uri>https://anypoint.mulesoft.com</uri> 
 				  <workerType>${cloudhub.workerType}</workerType>
